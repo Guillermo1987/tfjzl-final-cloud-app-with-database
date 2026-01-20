@@ -1,0 +1,15 @@
+OPCIÓN 1: ENVÍO Y EVALUACIÓN CALIFICADOS POR IA
+
+1. URL del archivo models.py:
+https://github.com/guilleubedag/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/models.py
+
+2. URL del archivo admin.py:
+https://github.com/guilleubedag/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/admin.py
+
+Proyecto completado con:
+- Modelos: Question, Choice, Submission
+- Vistas: submit(), show_exam_result()
+- URLs configuradas
+- Admin registrado
+- Migraciones aplicadas
+
