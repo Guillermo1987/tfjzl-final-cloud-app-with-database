@@ -28,3 +28,10 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Instructor)
 admin.site.register(Learner)
+
+# Register exam models
+from .models import Question, Choice, Submission
+
+admin.site.register(Question)
+admin.site.register(Choice)
+admin.site.register(Submission)
