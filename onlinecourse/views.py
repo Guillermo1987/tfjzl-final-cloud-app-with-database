@@ -134,3 +134,55 @@ def extract_answers(request):
 
 
 
+
+
+# Submit exam view
+@login_required
+def submit(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    user = request.user
+    enrollment = Enrollment.objects.get(user=user, course=course)
+    
+    # Create submission
+    submission = Submission.objects.create(enrollment=enrollment)
+    
+    # Get selected choices
+    for key in request.POST:
+        if key.startswith('choice'):
+            choice_id = request.POST[key]
+            choice = Choice.objects.get(id=choice_id)
+            submission.choices.add(choice)
+    
+    submission.save()
+    return HttpResponseRedirect(reverse('onlinecourse:show_exam_result', args=(course.id, submission.id)))
+
+
+# Show exam result view
+@login_required
+def show_exam_result(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
+    
+    # Calculate score
+    total_score = 0
+    total_grade = 0
+    
+    for lesson in course.lesson_set.all():
+        for question in lesson.question_set.all():
+            total_grade += question.grade
+            selected_ids = [c.id for c in submission.choices.filter(question=question)]
+            if question.is_get_score(selected_ids):
+                total_score += question.grade
+    
+    percentage = (total_score / total_grade * 100) if total_grade > 0 else 0
+    
+    context = {
+        'course': course,
+        'submission': submission,
+        'grade': percentage,
+        'total_score': total_score,
+        'total_grade': total_grade,
+        'selected_ids': [c.id for c in submission.choices.all()]
+    }
+    
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
